@@ -14,7 +14,6 @@ class CSVGeneratorView(View):
     encoding = 'utf-8'
 
     def __init__(self, *args, **kwargs):
-        print kwargs
         if not self.model and not 'model' in kwargs:
             raise NotImplementedError(
                 "You must assign a model instance "
