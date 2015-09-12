@@ -28,6 +28,9 @@ class CSVGeneratorView(View):
 
         super(CSVGeneratorView, self).__init__(*args, **kwargs)
 
+    def _get_csv_headers(self, qs):
+        return qs[0].keys()
+
     def _get_queryset(self):
         if not self.queryset:
             return self.model.objects.all()
@@ -35,7 +38,7 @@ class CSVGeneratorView(View):
         return self.queryset
 
     def get(self, request, *args, **kwargs):
-        queryset = self._get_queryset()
+        queryset = self._get_queryset().values()
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s.csv' % \
@@ -44,7 +47,8 @@ class CSVGeneratorView(View):
         writer = unicodecsv.writer(response, encoding=self.encoding)
 
         if queryset:
-            writer.writerows([obj.values() for obj in queryset.values()])
+            writer.writerow(self._get_csv_headers(queryset))
+            writer.writerows([obj.values() for obj in queryset])
         else:
             writer.writerow([self.empty_qs_message])
 
