@@ -29,6 +29,11 @@ class CSVGeneratorView(View):
         super(CSVGeneratorView, self).__init__(*args, **kwargs)
 
     def _get_csv_headers(self, qs):
+        # Because of the python nature the keys of the ValuQuerySet
+        # do not follow any specific order, we want to make sure
+        # the headers are correctly ordered, so we get the order
+        # of the keys of the first item inside our queryset to
+        # know how they'll be ordered for our model.
         return qs[0].keys()
 
     def _get_queryset(self):
